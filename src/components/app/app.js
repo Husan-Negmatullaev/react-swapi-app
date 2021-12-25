@@ -15,6 +15,7 @@ import Row from '../UI/row';
 import SwapiService from "../../services/swapi-service";
 import ErrorBoundary from "../UI/error-boundary";
 import {Record} from "../item-details/item-details";
+import HOCWithData from "../hoc-helpers";
 
 export default class App extends Component {
     swapi = new SwapiService()
@@ -46,7 +47,9 @@ export default class App extends Component {
         const { getPlanet,
                 getPerson,
                 getPersonImage,
-                getPlanetImage} = this.swapi
+                getPlanetImage,
+                getAllStarships,
+                getAllPlanets} = this.swapi
         const starshipDetail = (
             <ItemDetails idPerson={5}
                          getData={getPerson}
@@ -65,6 +68,7 @@ export default class App extends Component {
                 <Record field={'diameter'} label={'Diameter'} />
             </ItemDetails>
         )
+        const Elem = HOCWithData(ItemList, getAllStarships)
         return (
             <div>
                 <ErrorBoundary>
@@ -74,7 +78,13 @@ export default class App extends Component {
                     {/*<ErrorButton />*/}
                     {/*<PeoplePage />*/}
                     {/*<Row left={starshipDetail} right={planetDetail} />*/}
-
+                    <Elem onItemListSelected={(id) => console.log(id)}>
+                        {({name}) => name }
+                    </Elem>
+                    {/*<ItemList getData={getAllStarships}*/}
+                    {/*          onItemListSelected={(id) => console.log(id)}>*/}
+                    {/*    {({name}) => name}*/}
+                    {/*</ItemList>*/}
                 </ErrorBoundary>
             </div>
         );

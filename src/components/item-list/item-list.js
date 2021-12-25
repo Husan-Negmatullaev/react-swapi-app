@@ -1,37 +1,21 @@
 import React, { Component } from 'react';
 
 import './item-list.css';
-import Spinner from "../spinner";
+import HOCWithData from "../hoc-helpers";
+import itemList from "./index";
+import SwapiService from "../../services/swapi-service";
 
-export default class ItemList extends Component {
+const ItemList = (props) => {
+    const {data, onItemListSelected, children: renderLabel} = props
 
-    state = {
-        itemList: null,
-        error: false,
-    }
-
-    onError = (error) => {
-        this.setState({error})
-    }
-
-    componentDidMount() {
-        const {getData} = this.props
-
-        getData()
-            .then(itemList => {
-                this.setState({itemList})
-            })
-            .catch(this.onError)
-    }
-
-    renderItems(itemList) {
-        return itemList.map((item) => {
+    const renderItems = (data) => {
+        return data.map((item) => {
             const {id} = item
-            const renderValue = this.props.children(item)
+            const renderValue = renderLabel(item)
             return (
                 <li key={id}
                     className="list-group-item"
-                    onClick={() => this.props.onItemListSelected(id)}
+                    onClick={() => onItemListSelected(id)}
                 >
                     {renderValue}
                 </li>
@@ -39,24 +23,13 @@ export default class ItemList extends Component {
         })
     }
 
-    render() {
-        const {itemList} = this.state
-
-        if (!itemList) {
-            return <Spinner />
-        }
-        const item = this.renderItems(itemList)
-
-        return (
-            <ul className="item-list list-group">
-                {item}
-            </ul>
-        );
-    }
+    const item = renderItems(data)
+    return (
+        <ul className="item-list list-group">
+            {item}
+        </ul>
+    );
 }
+const {getAllPeople} = new SwapiService()
 
-const HOCWithData = () => {
-    return class extends Component {
-
-    }
-}
+export default ItemList
